@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\EmailVerificationController;
 use App\Http\Controllers\Api\NewPasswordController;
+use App\Http\Controllers\CommentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,6 +25,9 @@ Route::post('artikels', [ArticleController::class, 'store']);
 Route::get('artikels/{id}', [ArticleController::class, 'show']);
 Route::put('artikels/{id}', [ArticleController::class, 'update']);
 Route::delete('artikels/{id}', [ArticleController::class, 'destroy']);
+
+Route::post('comments', [CommentController::class, 'store']);
+Route::post('reactions', [ReactionController::class, 'store']);
 
 Route::middleware('auth:sanctum','verified')->get('/user', function (Request $request) {
     return $request->user();
