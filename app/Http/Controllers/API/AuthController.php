@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Validation\ValidationException;
 use Validator;
 
 class AuthController extends Controller
@@ -62,5 +64,15 @@ class AuthController extends Controller
                 'data' => null
             ]);
         }
+    }
+    public function logout(Request $request)
+    {
+        $request->user()->currentAccessToken()->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Logout sukses',
+            'data' => null
+        ]);
     }
 }
