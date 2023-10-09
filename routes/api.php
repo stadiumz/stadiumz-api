@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\ArticleController;
 use App\Http\Controllers\API\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -16,6 +17,12 @@ use Illuminate\Support\Facades\Route;
 */
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
+
+Route::get('artikels', [ArticleController::class, 'index']);
+Route::post('artikels', [ArticleController::class, 'store']);
+Route::get('artikels/{id}', [ArticleController::class, 'show']);
+Route::put('artikels/{id}', [ArticleController::class, 'update']);
+Route::delete('artikels/{id}', [ArticleController::class, 'destroy']);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
