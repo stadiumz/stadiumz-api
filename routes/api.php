@@ -33,7 +33,7 @@ Route::delete('artikels/{id}', [ArticleController::class, 'destroy']);
 Route::post('comments', [CommentController::class, 'store']);
 Route::post('reactions', [ReactionController::class, 'store']);
 
-Route::middleware('auth:sanctum','verified')->get('/user', function (Request $request) {
+Route::middleware(['auth:sanctum','verified'])->get('/user', function (Request $request) {
     return $request->user();
 });
 
