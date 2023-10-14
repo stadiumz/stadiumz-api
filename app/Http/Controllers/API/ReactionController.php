@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\reaction;
+use App\Models\Reaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -22,7 +22,7 @@ class ReactionController extends Controller
             return $this->sendError('Validation Error.', $validator->errors());
         }
 
-        $reactions = reaction::create($input);
+        $reactions = Reaction::create($input);
 
         return response()->json([
             "success" => true,

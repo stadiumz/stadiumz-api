@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Models\artikel;
+use App\Models\Artikel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -11,7 +11,7 @@ class ArticleController extends Controller
 {
     public function index()
     {
-        $artikels = artikel::all();
+        $artikels = Artikel::all();
 
         return response()->json([
             "success" => true,
@@ -34,7 +34,7 @@ class ArticleController extends Controller
             return $this->sendError('Validation Error.', $validator->errors());
         }
 
-        $artikels = artikel::create($input);
+        $artikels = Artikel::create($input);
 
         return response()->json([
             "success" => true,
@@ -46,7 +46,7 @@ class ArticleController extends Controller
 
     public function show($id)
     {
-        $artikels = artikel::find($id);
+        $artikels = Artikel::find($id);
 
         if (is_null($artikels)) {
             return $this->sendError('Artikel not found.');
@@ -60,7 +60,7 @@ class ArticleController extends Controller
 
     }
 
-    public function update(Request $request, artikel $artikel)
+    public function update(Request $request, Artikel $artikel)
     {
         $input = $request->all();
 
@@ -85,7 +85,7 @@ class ArticleController extends Controller
         ]);
     }
 
-    public function destroy(artikel $artikel)
+    public function destroy(Artikel $artikel)
     {
         $artikel->delete();
 

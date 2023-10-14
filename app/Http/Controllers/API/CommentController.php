@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\comment;
+use App\Models\Comment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -22,7 +22,7 @@ class CommentController extends Controller
             return $this->sendError('Validation Error.', $validator->errors());
         }
 
-        $comments = comment::create($input);
+        $comments = Comment::create($input);
 
         return response()->json([
             "success" => true,
