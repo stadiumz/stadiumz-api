@@ -2,12 +2,7 @@
 
 
 use App\Http\Controllers\API\LearnController;
-use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\EmailVerificationController;
-use App\Http\Controllers\Api\NewPasswordController;
 use App\Http\Controllers\Api\ProfileController;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\ArticleController;
 use App\Models\User;
 use Illuminate\Http\Request;
