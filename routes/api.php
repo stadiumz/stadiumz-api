@@ -1,13 +1,13 @@
 <?php
 
-<<<<<<< HEAD
+
+use App\Http\Controllers\API\LearnController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\EmailVerificationController;
 use App\Http\Controllers\Api\NewPasswordController;
 use App\Http\Controllers\Api\ProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-=======
 use App\Http\Controllers\API\ArticleController;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -16,7 +16,6 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\EmailVerificationController;
 use App\Http\Controllers\Api\NewPasswordController;
 use App\Http\Controllers\CommentController;
->>>>>>> f9e3f747f8c6e9d25b92da99919a07bc1265fbeb
 
 /*
 |--------------------------------------------------------------------------
@@ -28,6 +27,7 @@ use App\Http\Controllers\CommentController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+Route::post('/generate-topic', [LearnController::class, 'generateTopic']);
 
 Route::get('artikels', [ArticleController::class, 'index']);
 Route::post('artikels', [ArticleController::class, 'store']);
@@ -51,8 +51,5 @@ Route::get('verify-email/{id}/{hash}', [EmailVerificationController::class, 'ver
 
 Route::post('forgot-password', [NewPasswordController::class, 'forgotPassword']);
 Route::post('reset-password', [NewPasswordController::class, 'reset']);
-<<<<<<< HEAD
-Route::post('update-profile', [ProfileController::class, 'update_profile'])->middleware('auth:sanctum');
-=======
 
->>>>>>> f9e3f747f8c6e9d25b92da99919a07bc1265fbeb
+Route::post('update-profile', [ProfileController::class, 'update_profile'])->middleware('auth:sanctum');
