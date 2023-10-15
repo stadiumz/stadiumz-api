@@ -4,6 +4,8 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\Artikel;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -27,12 +29,17 @@ class ArticleController extends Controller
         $validator = Validator::make($input, [
             'title' => 'required',
             'content' => 'required',
-            'user_id' => 'required',
         ]);
 
         if($validator->fails()){
             return $this->sendError('Validation Error.', $validator->errors());
         }
+
+        // Mengambil ID pengguna yang sedang login
+        $user_id = Auth::id();
+
+        // Menambahkan user_id ke input sebelum menyimpan artikel
+        $input['user_id'] = $user_id;
 
         $artikels = Artikel::create($input);
 
