@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\API\ChatController;
 use App\Http\Controllers\Api\EmailVerificationController;
 use App\Http\Controllers\Api\NewPasswordController;
 use App\Http\Controllers\CommentController;
@@ -48,3 +49,6 @@ Route::post('forgot-password', [NewPasswordController::class, 'forgotPassword'])
 Route::post('reset-password', [NewPasswordController::class, 'reset']);
 
 Route::post('update-profile', [ProfileController::class, 'update_profile'])->middleware('auth:sanctum');
+
+Route::post('/chat', [ChatController::class, 'createChat']);
+Route::get('/chat/{userId}', [ChatController::class, 'getChatForUser']);
