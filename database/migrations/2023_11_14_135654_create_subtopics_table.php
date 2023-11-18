@@ -15,12 +15,12 @@ return new class extends Migration
             $table->id();
             $table->foreignId('topic_id')->constrained('topics');
             $table->string('subtopic');
-            $table->string('description');
-            $table->string('youtube_link');
-            $table->text('youtube_transcript');
-            $table->string('link_reference');
-            $table->integer('is_done');
-            $table->integer('is_locked');
+            $table->string('description')->nullable();
+            $table->string('youtube_link')->nullable();
+            $table->text('youtube_transcript')->nullable();
+            $table->string('link_reference')->nullable();
+            $table->integer('is_done')->default(0);
+            $table->integer('is_locked')->default(0);
             $table->timestamps();
         });
     }
