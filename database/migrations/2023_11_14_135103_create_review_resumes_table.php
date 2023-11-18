@@ -11,14 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('gen_subtopic', function (Blueprint $table) {
+        Schema::create('review_resumes', function (Blueprint $table) {
             $table->id();
-            // relation to gen_topic
-            $table->foreignId('gen_topic_id')->constrained('gen_topic');
-            $table->string('subtopic');
-            $table->string('youtube_link');
-            $table->text('youtube_transcript');
-            $table->text('youtube_transcript_summary');
+            $table->foreignId('user_id')->constrained('users');
+            $table->string('file');
+            $table->text('review');
             $table->timestamps();
         });
     }
@@ -28,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('gen_subtopic');
+        Schema::dropIfExists('review_resumes');
     }
 };

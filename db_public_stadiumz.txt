@@ -1,0 +1,6 @@
+DB_CONNECTION=mysql
+DB_HOST=103.55.39.181
+DB_PORT=3306
+DB_DATABASE=pesanped_stadiumz
+DB_USERNAME=pesanped_admin
+DB_PASSWORD=U@HYemwU@7Ku9sN

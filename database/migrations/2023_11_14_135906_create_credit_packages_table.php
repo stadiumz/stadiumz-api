@@ -11,9 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('jenis_kelamin')->nullable();
-            $table->string('profile_photo')->nullable();
+        Schema::create('credit_packages', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->integer('credit');
+            $table->integer('price');
+            $table->timestamps();
         });
     }
 
@@ -22,8 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropCoumn(['jenis_kelamin','profile_photo']);
-        });
+        Schema::dropIfExists('credit_packages');
     }
 };

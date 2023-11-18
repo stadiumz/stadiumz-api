@@ -11,15 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('gen_quiz', function (Blueprint $table) {
+        Schema::create('quizzes', function (Blueprint $table) {
             $table->id();
-            // relation to gen_subtopic
-            $table->foreignId('gen_subtopic_id')->constrained('gen_subtopic');
+            $table->foreignId('subtopic_id')->constrained('subtopics');
             $table->string('question');
-            $table->string('answer');
-            $table->string('wrong_answer_1');
-            $table->string('wrong_answer_2');
-            $table->string('wrong_answer_3');
+            $table->string('option');
+            $table->string('wrong_option_1');
+            $table->string('wrong_option_2');
+            $table->string('wrong_option_3');
             $table->timestamps();
         });
     }
@@ -29,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('gen_quiz');
+        Schema::dropIfExists('quizzes');
     }
 };
