@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('gen_topic', function (Blueprint $table) {
+        Schema::create('comments', function (Blueprint $table) {
             $table->id();
-            // relation to user
             $table->foreignId('user_id')->constrained('users');
-            $table->string('topic');
+            $table->foreignId('article_id')->constrained('articles');
+            $table->text('comment');
             $table->timestamps();
         });
     }
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('gen_topic');
+        Schema::dropIfExists('comments');
     }
 };

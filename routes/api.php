@@ -9,9 +9,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\API\ChatController;
+use App\Http\Controllers\API\CreditPackageController;
 use App\Http\Controllers\Api\EmailVerificationController;
 use App\Http\Controllers\Api\NewPasswordController;
+use App\Http\Controllers\API\TransactionController;
 use App\Http\Controllers\CommentController;
+use Illuminate\Routing\Route as RoutingRoute;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,8 +41,8 @@ Route::middleware(['auth:sanctum','verified'])->get('/user', function (Request $
     return $request->user();
 });
 
-Route::post('login', [AuthController::class, 'login']);
-Route::post('register', [AuthController::class, 'register']);
+Route::post('login', [AuthController::class, 'login'])->name('login');
+Route::post('register', [AuthController::class, 'register'])->name('register');
 Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
 Route::post('email/verification-notification', [EmailVerificationController::class, 'sendVerificationEmail'])->middleware('auth:sanctum');
@@ -48,7 +51,13 @@ Route::get('verify-email/{id}/{hash}', [EmailVerificationController::class, 'ver
 Route::post('forgot-password', [NewPasswordController::class, 'forgotPassword']);
 Route::post('reset-password', [NewPasswordController::class, 'reset']);
 
-Route::post('update-profile', [ProfileController::class, 'update_profile'])->middleware('auth:sanctum');
+Route::post('/update-profile', [ProfileController::class, 'update_profile'])->middleware('auth:sanctum');
 
 Route::post('/chat', [ChatController::class, 'createChat']);
 Route::get('/chat/{userId}', [ChatController::class, 'getChatForUser']);
+
+Route::get('/credit-packages', [CreditPackageController::class, 'getCreditPackages']);
+Route::get('/credit-packages/{id}', [CreditPackageController::class, 'getCreditPackageById']);
+
+Route::post('transaction/create-payment', [TransactionController::class, 'createPayment'])->name('transaction.create-payment');
+Route::post('transaction/webhook', [TransactionController::class, 'webhook'])->name('transaction.webhook');
