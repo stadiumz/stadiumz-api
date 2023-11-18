@@ -20,7 +20,7 @@ return new class extends Migration
             $table->text('youtube_transcript')->nullable();
             $table->string('link_reference')->nullable();
             $table->integer('is_done')->default(0);
-            $table->integer('is_locked')->default(0);
+            $table->integer('is_locked')->default(1);
             $table->timestamps();
         });
     }
