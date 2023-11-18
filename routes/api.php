@@ -12,6 +12,7 @@ use App\Http\Controllers\API\ChatController;
 use App\Http\Controllers\Api\EmailVerificationController;
 use App\Http\Controllers\Api\NewPasswordController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\ReactionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,11 +35,11 @@ Route::delete('artikels/{id}', [ArticleController::class, 'destroy']);
 Route::post('comments', [CommentController::class, 'store']);
 Route::post('reactions', [ReactionController::class, 'store']);
 
-Route::middleware(['auth:sanctum','verified'])->get('/user', function (Request $request) {
+Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('login', [AuthController::class, 'login']);
+Route::post('login', [AuthController::class, 'login'])->middleware('guest:sanctum');
 Route::post('register', [AuthController::class, 'register']);
 Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
