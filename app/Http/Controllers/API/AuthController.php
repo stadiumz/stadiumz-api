@@ -5,10 +5,10 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
-use Validator;
 
 class AuthController extends Controller
 {
@@ -21,7 +21,7 @@ class AuthController extends Controller
             'confirm_password' => 'required|same:password'
         ]);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             return response()->json([
                 'success' => false,
                 'message' => 'Ada Kesalahan',
@@ -41,7 +41,6 @@ class AuthController extends Controller
             'message' => 'Sukses Register',
             'data' => $success
         ]);
-
     }
 
     public function login(Request $request)
@@ -65,7 +64,7 @@ class AuthController extends Controller
             ]);
         }
     }
-    
+
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();

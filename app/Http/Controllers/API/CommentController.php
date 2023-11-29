@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
 use App\Models\Comment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Controllers\Controller;
 
 class CommentController extends Controller
 {
@@ -18,8 +19,12 @@ class CommentController extends Controller
             'user_id' => 'required'
         ]);
 
-        if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors());
+        if ($validator->fails()) {
+            return response()->json([
+                "success" => false,
+                "message" => "Validation Error.",
+                "data" => $validator->errors()
+            ]);
         }
 
         $comments = Comment::create($input);
@@ -29,6 +34,5 @@ class CommentController extends Controller
             "message" => "Comment created successfully.",
             "data" => $comments
         ]);
-
     }
 }
