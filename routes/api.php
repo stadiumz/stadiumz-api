@@ -56,8 +56,11 @@ Route::post('/update-profile', [ProfileController::class, 'update_profile'])->mi
 Route::post('/chat', [ChatController::class, 'createChat']);
 Route::get('/chat/{userId}', [ChatController::class, 'getChatForUser']);
 
-Route::get('/credit-packages', [CreditPackageController::class, 'getCreditPackages']);
-Route::get('/credit-packages/{id}', [CreditPackageController::class, 'getCreditPackageById']);
-
-Route::post('transaction/create-payment', [TransactionController::class, 'createPayment'])->name('transaction.create-payment');
+// group route for transaction with middleware sactum
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('/credit-packages', [CreditPackageController::class, 'getCreditPackages']);
+    Route::get('/credit-packages/for', [CreditPackageController::class, 'getCreditPackageById']);
+    Route::post('transaction/create-payment', [TransactionController::class, 'createPayment'])->name('transaction.create-payment');
+});
 Route::post('transaction/webhook', [TransactionController::class, 'webhook'])->name('transaction.webhook');
+Route::post('transaction/expired-payment', [TransactionController::class, 'expiredPayment'])->name('transaction.expired-payment');

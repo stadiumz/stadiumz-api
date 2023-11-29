@@ -15,4 +15,12 @@ class CreditPackageController extends Controller
 
         return response()->json(['credit_packages' => $creditPackages], 200);
     }
+
+    public function getCreditPackageById(Request $request)
+    {
+        $id = $request->input('id');
+        $creditPackage = CreditPackage::find($id);
+
+        return response()->json(['credit_package' => $creditPackage], 200);
+    }
 }
