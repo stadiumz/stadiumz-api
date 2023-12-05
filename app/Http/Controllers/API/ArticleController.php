@@ -13,7 +13,10 @@ class ArticleController extends Controller
 {
     public function index()
     {
-        $artikels = Article::all();
+        $artikels = Article::query()
+            ->withCount(['comments', 'reactions'])
+            ->orderBy('created_at', 'desc')
+            ->with('user')->get();
 
         return response()->json([
             "success" => true,
@@ -71,7 +74,6 @@ class ArticleController extends Controller
     {
         $input = $request->all();
         $artikel = Article::find($id);
-        return $artikel;
 
         $validator = Validator::make($input, [
             'title' => 'string',

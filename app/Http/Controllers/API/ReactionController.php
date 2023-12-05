@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Reaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\Http\Controllers\Controller;
 
 class ReactionController extends Controller
 {
