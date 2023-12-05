@@ -13,8 +13,9 @@ use App\Http\Controllers\API\CreditPackageController;
 use App\Http\Controllers\Api\EmailVerificationController;
 use App\Http\Controllers\Api\NewPasswordController;
 use App\Http\Controllers\API\TransactionController;
-use App\Http\Controllers\CommentController;
-use App\Http\Controllers\ReactionController;
+use App\Http\Controllers\API\CommentController;
+use App\Http\Controllers\API\ReactionController;
+use App\Http\Controllers\CommentController as ControllersCommentController;
 use Illuminate\Routing\Route as RoutingRoute;
 
 /*
@@ -32,7 +33,7 @@ Route::post('/generate-topic', [LearnController::class, 'generateTopic']);
 Route::get('artikels', [ArticleController::class, 'index']);
 Route::post('artikels', [ArticleController::class, 'store']);
 Route::get('artikels/{id}', [ArticleController::class, 'show']);
-Route::put('artikels/{id}', [ArticleController::class, 'update']);
+Route::post('artikels/{id}', [ArticleController::class, 'update']);
 Route::delete('artikels/{id}', [ArticleController::class, 'destroy']);
 
 Route::post('comments', [CommentController::class, 'store']);

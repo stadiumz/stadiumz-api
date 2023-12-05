@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Models\Artikel;
+use App\Models\Article;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -13,7 +13,7 @@ class ArticleController extends Controller
 {
     public function index()
     {
-        $artikels = Artikel::all();
+        $artikels = Article::all();
 
         return response()->json([
             "success" => true,
@@ -27,9 +27,10 @@ class ArticleController extends Controller
         $input = $request->all();
 
         $validator = Validator::make($input, [
+            'thumbnail' => 'required',
             'title' => 'required',
             'content' => 'required',
-            'user_id' => 'required'
+            // 'user_id' => 'required'
         ]);
 
         if($validator->fails()){
@@ -40,9 +41,9 @@ class ArticleController extends Controller
         $user_id = Auth::id();
 
         // Menambahkan user_id ke input sebelum menyimpan artikel
-        $input['user_id'] = $user_id;
+        // $input['user_id'] = $user_id;
 
-        $artikels = Artikel::create($input);
+        $artikels = Article::create($input);
 
         return response()->json([
             "success" => true,
@@ -54,7 +55,7 @@ class ArticleController extends Controller
 
     public function show($id)
     {
-        $artikels = Artikel::find($id);
+        $artikels = Article::find($id);
 
         if (is_null($artikels)) {
             return $this->sendError('Artikel not found.');
@@ -68,9 +69,11 @@ class ArticleController extends Controller
 
     }
 
-    public function update(Request $request, Artikel $artikel)
+    public function update(Request $request, $id)
     {
         $input = $request->all();
+        $artikel = Article::find($id);
+        return $artikel;
 
         $validator = Validator::make($input, [
             'title' => 'required',
@@ -93,7 +96,7 @@ class ArticleController extends Controller
         ]);
     }
 
-    public function destroy(Artikel $artikel)
+    public function destroy(Article $artikel)
     {
         $artikel->delete();
 
