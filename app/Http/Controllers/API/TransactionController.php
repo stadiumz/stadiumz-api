@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\CreditPackage;
 use App\Models\Transaction;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -42,6 +44,11 @@ class TransactionController extends Controller
         $invoice->amount = $createInvoice['amount'];
         $invoice->status = Str::lower($createInvoice['status']);
         $invoice->save();
+
+        $credit = CreditPackage::where('price', $request->amount)->where('id', $request->credit_package_id)->first();
+        
+        $creditUser = new User();
+        $creditUser->where('id', $user_id)->increment('credit', $credit->credit); // Increment credit user
 
         return response()->json([
             'status' => 'success',
