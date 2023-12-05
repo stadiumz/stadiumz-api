@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
@@ -21,7 +22,7 @@ class AuthController extends Controller
             'confirm_password' => 'required|same:password'
         ]);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             return response()->json([
                 'success' => false,
                 'message' => 'Ada Kesalahan',
@@ -41,7 +42,6 @@ class AuthController extends Controller
             'message' => 'Sukses Register',
             'data' => $success
         ]);
-
     }
 
     public function login(Request $request)

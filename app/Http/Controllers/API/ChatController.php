@@ -5,12 +5,12 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
-use App\Models\Chats;
+use App\Models\Chat;
 
 class ChatController extends Controller
 {
     public function createChat(Request $request)
-    {   
+    {
         $input = $request->all();
 
         $validator = Validator::make($input, [
@@ -23,7 +23,7 @@ class ChatController extends Controller
             return response()->json(['error' => $validator->errors()], 400);
         }
 
-        $chat = Chats::create($input);
+        $chat = Chat::create($input);
 
         return response()->json([
             'success' => true,
@@ -34,7 +34,7 @@ class ChatController extends Controller
 
     public function getChatForUser(Request $request, $userId)
     {
-        $chats = Chats::where('to_id', $userId)->orWhere('from_id', $userId)->get();
+        $chats = Chat::where('to_id', $userId)->where('from_id', auth()->user()->id)->get();
 
         return response()->json(['messages' => $chats], 200);
     }

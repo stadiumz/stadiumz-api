@@ -33,7 +33,7 @@ class ArticleController extends Controller
             // 'user_id' => 'required'
         ]);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             return $this->sendError('Validation Error.', $validator->errors());
         }
 
@@ -50,7 +50,6 @@ class ArticleController extends Controller
             "message" => "Article created successfully.",
             "data" => $artikels
         ]);
-
     }
 
     public function show($id)
@@ -58,7 +57,7 @@ class ArticleController extends Controller
         $artikels = Article::find($id);
 
         if (is_null($artikels)) {
-            return $this->sendError('Artikel not found.');
+            return $this->sendError('Article not found.');
         }
 
         return response()->json([
@@ -66,7 +65,6 @@ class ArticleController extends Controller
             "message" => "Article retrieved successfully.",
             "data" => $artikels
         ]);
-
     }
 
     public function update(Request $request, $id)
@@ -76,17 +74,22 @@ class ArticleController extends Controller
         return $artikel;
 
         $validator = Validator::make($input, [
-            'title' => 'required',
-            'content' => 'required',
+            'title' => 'string',
+            'content' => 'string',
         ]);
 
-        if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors());
+        if ($validator->fails()) {
+            return response()->json([
+                "success" => false,
+                "message" => "Validation Error.",
+                "data" => $validator->errors()
+            ]);
         }
 
-        $artikel->title = $input['title'];
-        $artikel->content = $input['content'];
-        $artikel->user_id = $input['user_id'];
+        $artikel->title = $input['title'] ?? $artikel->title;
+        $artikel->content = $input['content'] ?? $artikel->content;
+        $artikel->user_id = auth()->user()->id;
+        $artikel->thumbnail = $input['thumbnail'] ?? $artikel->thumbnail;
         $artikel->save();
 
         return response()->json([
@@ -106,5 +109,4 @@ class ArticleController extends Controller
             "data" => $artikel
         ]);
     }
-
 }

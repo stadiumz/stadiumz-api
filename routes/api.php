@@ -28,16 +28,34 @@ use Illuminate\Routing\Route as RoutingRoute;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::post('/generate-topic', [LearnController::class, 'generateTopic']);
 
-Route::get('artikels', [ArticleController::class, 'index']);
-Route::post('artikels', [ArticleController::class, 'store']);
-Route::get('artikels/{id}', [ArticleController::class, 'show']);
-Route::post('artikels/{id}', [ArticleController::class, 'update']);
-Route::delete('artikels/{id}', [ArticleController::class, 'destroy']);
 
-Route::post('comments', [CommentController::class, 'store']);
-Route::post('reactions', [ReactionController::class, 'store']);
+Route::group(['middleware' => ['auth:sanctum']], function () {
+    Route::post('/generate-topic', [LearnController::class, 'generateTopic']);
+
+    Route::get('artikels', [ArticleController::class, 'index']);
+    Route::post('artikels', [ArticleController::class, 'store']);
+    Route::get('artikels/{id}', [ArticleController::class, 'show']);
+    Route::put('artikels/{id}', [ArticleController::class, 'update']);
+    Route::delete('artikels/{id}', [ArticleController::class, 'destroy']);
+
+    Route::post('comments', [CommentController::class, 'store']);
+    Route::post('reactions', [ReactionController::class, 'store']);
+
+    Route::post('/update-profile', [ProfileController::class, 'update_profile'])->middleware('auth:sanctum');
+
+    Route::post('/chat', [ChatController::class, 'createChat']);
+    Route::get('/chat/{from}', [ChatController::class, 'getChatForUser']);
+
+    Route::get('/credit-packages', [CreditPackageController::class, 'getCreditPackages']);
+    Route::get('/credit-packages/{id}', [CreditPackageController::class, 'getCreditPackageById']);
+
+    Route::post('transaction/create-payment', [TransactionController::class, 'createPayment'])->name('transaction.create-payment');
+    Route::post('transaction/webhook', [TransactionController::class, 'webhook'])->name('transaction.webhook');
+
+    Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+});
+
 
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
@@ -45,21 +63,9 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
 
 Route::post('login', [AuthController::class, 'login'])->middleware('guest:sanctum');
 Route::post('register', [AuthController::class, 'register']);
-Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
 Route::post('email/verification-notification', [EmailVerificationController::class, 'sendVerificationEmail'])->middleware('auth:sanctum');
 Route::get('verify-email/{id}/{hash}', [EmailVerificationController::class, 'verify'])->name('verification.verify')->middleware('auth:sanctum');
 
 Route::post('forgot-password', [NewPasswordController::class, 'forgotPassword']);
 Route::post('reset-password', [NewPasswordController::class, 'reset']);
-
-Route::post('/update-profile', [ProfileController::class, 'update_profile'])->middleware('auth:sanctum');
-
-Route::post('/chat', [ChatController::class, 'createChat']);
-Route::get('/chat/{userId}', [ChatController::class, 'getChatForUser']);
-
-Route::get('/credit-packages', [CreditPackageController::class, 'getCreditPackages']);
-Route::get('/credit-packages/{id}', [CreditPackageController::class, 'getCreditPackageById']);
-
-Route::post('transaction/create-payment', [TransactionController::class, 'createPayment'])->name('transaction.create-payment');
-Route::post('transaction/webhook', [TransactionController::class, 'webhook'])->name('transaction.webhook');

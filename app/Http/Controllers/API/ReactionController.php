@@ -6,10 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Models\Reaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Controllers\Controller;
 
 class ReactionController extends Controller
 {
-     public function store(Request $request)
+    public function store(Request $request)
     {
         $input = $request->all();
 
@@ -19,7 +20,7 @@ class ReactionController extends Controller
             'user_id' => 'required'
         ]);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             return $this->sendError('Validation Error.', $validator->errors());
         }
 
@@ -30,6 +31,5 @@ class ReactionController extends Controller
             "message" => "Reaction created successfully.",
             "data" => $reactions
         ]);
-
     }
 }
