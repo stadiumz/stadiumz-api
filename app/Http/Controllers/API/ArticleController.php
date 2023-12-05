@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Models\Artikel;
+use App\Models\Article;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -13,7 +13,10 @@ class ArticleController extends Controller
 {
     public function index()
     {
-        $artikels = Artikel::all();
+        $artikels = Article::query()
+            ->withCount(['comments', 'reactions'])
+            ->orderBy('created_at', 'desc')
+            ->with('user')->get();
 
         return response()->json([
             "success" => true,
@@ -29,10 +32,15 @@ class ArticleController extends Controller
         $validator = Validator::make($input, [
             'title' => 'required',
             'content' => 'required',
+            // 'user_id' => 'required'
         ]);
 
-        if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors());
+        if ($validator->fails()) {
+            return response()->json([
+                "success" => false,
+                "message" => "Validation Error.",
+                "errors" => $validator->errors()
+            ], 400);
         }
 
         // Mengambil ID pengguna yang sedang login
@@ -40,23 +48,23 @@ class ArticleController extends Controller
 
         // Menambahkan user_id ke input sebelum menyimpan artikel
         $input['user_id'] = $user_id;
+        $input['thumbnail'] = $input['thumbnail'] ?? 'https://via.placeholder.com/150';
 
-        $artikels = Artikel::create($input);
+        $artikels = Article::create($input);
 
         return response()->json([
             "success" => true,
             "message" => "Article created successfully.",
             "data" => $artikels
         ]);
-
     }
 
     public function show($id)
     {
-        $artikels = Artikel::find($id);
+        $artikels = Article::find($id);
 
         if (is_null($artikels)) {
-            return $this->sendError('Artikel not found.');
+            return $this->sendError('Article not found.');
         }
 
         return response()->json([
@@ -64,25 +72,30 @@ class ArticleController extends Controller
             "message" => "Article retrieved successfully.",
             "data" => $artikels
         ]);
-
     }
 
-    public function update(Request $request, Artikel $artikel)
+    public function update(Request $request, $id)
     {
         $input = $request->all();
+        $artikel = Article::find($id);
 
         $validator = Validator::make($input, [
-            'title' => 'required',
-            'content' => 'required',
+            'title' => 'string',
+            'content' => 'string',
         ]);
 
-        if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors());
+        if ($validator->fails()) {
+            return response()->json([
+                "success" => false,
+                "message" => "Validation Error.",
+                "data" => $validator->errors()
+            ]);
         }
 
-        $artikel->title = $input['title'];
-        $artikel->content = $input['content'];
-        $artikel->user_id = $input['user_id'];
+        $artikel->title = $input['title'] ?? $artikel->title;
+        $artikel->content = $input['content'] ?? $artikel->content;
+        $artikel->user_id = auth()->user()->id;
+        $artikel->thumbnail = $input['thumbnail'] ?? $artikel->thumbnail;
         $artikel->save();
 
         return response()->json([
@@ -92,7 +105,7 @@ class ArticleController extends Controller
         ]);
     }
 
-    public function destroy(Artikel $artikel)
+    public function destroy(Article $artikel)
     {
         $artikel->delete();
 
@@ -102,5 +115,4 @@ class ArticleController extends Controller
             "data" => $artikel
         ]);
     }
-
 }

@@ -17,9 +17,9 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->string('jenis_kelamin');
-            $table->string('profile_photo');
-            $table->integer('credit');
+            $table->enum('jenis_kelamin', ['L', 'P'])->nullable();
+            $table->string('profile_photo')->default('default.png');
+            $table->integer('credit')->default(0);
             $table->enum('role', ['admin', 'user'])->default('user');
             $table->rememberToken();
             $table->timestamps();

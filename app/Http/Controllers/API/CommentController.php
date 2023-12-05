@@ -1,25 +1,44 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\Controller;
 use App\Models\Comment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class CommentController extends Controller
 {
+    public function sendError($message, $errors = [], $code = 404)
+    {
+        $response = [
+            'success' => false,
+            'message' => $message,
+        ];
+
+        if (!empty($errors)) {
+            $response['data'] = $errors;
+        }
+
+        return response()->json($response, $code);
+    }
+
     public function store(Request $request)
     {
         $input = $request->all();
 
         $validator = Validator::make($input, [
             'comment' => 'required',
-            'artikel_id' => 'required',
+            'article_id' => 'required',
             'user_id' => 'required'
         ]);
 
-        if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors());
+        if ($validator->fails()) {
+            return response()->json([
+                "success" => false,
+                "message" => "Validation Error.",
+                "data" => $validator->errors()
+            ]);
         }
 
         $comments = Comment::create($input);
@@ -29,6 +48,5 @@ class CommentController extends Controller
             "message" => "Comment created successfully.",
             "data" => $comments
         ]);
-
     }
 }
