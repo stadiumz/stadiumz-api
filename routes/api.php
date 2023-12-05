@@ -69,3 +69,13 @@ Route::get('verify-email/{id}/{hash}', [EmailVerificationController::class, 'ver
 
 Route::post('forgot-password', [NewPasswordController::class, 'forgotPassword']);
 Route::post('reset-password', [NewPasswordController::class, 'reset']);
+
+// group route for transaction with middleware sactum
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('/credit-packages', [CreditPackageController::class, 'getCreditPackages']);
+    Route::get('/credit-packages/for', [CreditPackageController::class, 'getCreditPackageById']);
+    Route::post('transaction/create-payment', [TransactionController::class, 'createPayment'])->name('transaction.create-payment');
+});
+
+Route::post('transaction/webhook', [TransactionController::class, 'webhook'])->name('transaction.webhook');
+Route::post('transaction/expired-payment', [TransactionController::class, 'expiredPayment'])->name('transaction.expired-payment');
