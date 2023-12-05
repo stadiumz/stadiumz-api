@@ -30,21 +30,25 @@ class ArticleController extends Controller
         $input = $request->all();
 
         $validator = Validator::make($input, [
-            'thumbnail' => 'required',
             'title' => 'required',
             'content' => 'required',
             // 'user_id' => 'required'
         ]);
 
         if ($validator->fails()) {
-            return $this->sendError('Validation Error.', $validator->errors());
+            return response()->json([
+                "success" => false,
+                "message" => "Validation Error.",
+                "errors" => $validator->errors()
+            ], 400);
         }
 
         // Mengambil ID pengguna yang sedang login
         $user_id = Auth::id();
 
         // Menambahkan user_id ke input sebelum menyimpan artikel
-        // $input['user_id'] = $user_id;
+        $input['user_id'] = $user_id;
+        $input['thumbnail'] = $input['thumbnail'] ?? 'https://via.placeholder.com/150';
 
         $artikels = Article::create($input);
 
