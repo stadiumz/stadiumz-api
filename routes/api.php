@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\NewPasswordController;
 use App\Http\Controllers\API\TransactionController;
 use App\Http\Controllers\API\CommentController;
 use App\Http\Controllers\API\ReactionController;
+use App\Http\Controllers\CommentController as ControllersCommentController;
 use Illuminate\Routing\Route as RoutingRoute;
 
 /*

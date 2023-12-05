@@ -27,8 +27,10 @@ class ArticleController extends Controller
         $input = $request->all();
 
         $validator = Validator::make($input, [
+            'thumbnail' => 'required',
             'title' => 'required',
             'content' => 'required',
+            // 'user_id' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -39,7 +41,7 @@ class ArticleController extends Controller
         $user_id = Auth::id();
 
         // Menambahkan user_id ke input sebelum menyimpan artikel
-        $input['user_id'] = $user_id;
+        // $input['user_id'] = $user_id;
 
         $artikels = Article::create($input);
 
@@ -65,9 +67,11 @@ class ArticleController extends Controller
         ]);
     }
 
-    public function update(Request $request, Article $artikel)
+    public function update(Request $request, $id)
     {
         $input = $request->all();
+        $artikel = Article::find($id);
+        return $artikel;
 
         $validator = Validator::make($input, [
             'title' => 'string',

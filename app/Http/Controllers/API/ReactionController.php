@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\Controller;
 use App\Models\Reaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -15,7 +16,7 @@ class ReactionController extends Controller
 
         $validator = Validator::make($input, [
             'react' => 'required',
-            'artikel_id' => 'required',
+            'article_id' => 'required',
             'user_id' => 'required'
         ]);
 
@@ -27,7 +28,7 @@ class ReactionController extends Controller
 
         return response()->json([
             "success" => true,
-            "message" => "Comment created successfully.",
+            "message" => "Reaction created successfully.",
             "data" => $reactions
         ]);
     }
