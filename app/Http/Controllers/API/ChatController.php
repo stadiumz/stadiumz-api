@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
 use App\Models\Chat;
+use Pusher\Pusher;
+use Illuminate\Support\Facades\Auth;
 
 class ChatController extends Controller
 {
@@ -14,8 +16,8 @@ class ChatController extends Controller
         $input = $request->all();
 
         $validator = Validator::make($input, [
-            'from_id' => 'required|exists:users,id',
-            'to_id' => 'required|exists:users,id',
+           // 'from_id' => 'required',
+            'to_id' => 'required',
             'message' => 'required|string'
         ]);
 
@@ -23,7 +25,23 @@ class ChatController extends Controller
             return response()->json(['error' => $validator->errors()], 400);
         }
 
+        $user_id = Auth::id();
+
+        $input['from_id'] = $user_id;
+
         $chat = Chat::create($input);
+
+        $pusher = new Pusher(
+            env('PUSHER_APP_KEY'),
+            env('PUSHER_APP_SECRET'),
+            env('PUSHER_APP_ID'),
+            [
+                'cluster' => env('PUSHER_APP_CLUSTER'),
+                'useTLS' => true,
+            ]
+        );
+        
+        $pusher->trigger('chat-channel', 'new-chat', $chat);
 
         return response()->json([
             'success' => true,
