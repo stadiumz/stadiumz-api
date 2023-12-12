@@ -15,6 +15,8 @@ use App\Http\Controllers\Api\NewPasswordController;
 use App\Http\Controllers\API\TransactionController;
 use App\Http\Controllers\API\CommentController;
 use App\Http\Controllers\API\ReactionController;
+use App\Http\Controllers\API\SubTopicController;
+use App\Http\Controllers\API\TopicController;
 use App\Http\Controllers\CommentController as ControllersCommentController;
 use Illuminate\Routing\Route as RoutingRoute;
 
@@ -31,7 +33,6 @@ use Illuminate\Routing\Route as RoutingRoute;
 
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
-    Route::post('/generate-topic', [LearnController::class, 'generateTopic']);
 
     Route::get('artikels', [ArticleController::class, 'index']);
     Route::post('artikels', [ArticleController::class, 'store']);
@@ -43,6 +44,13 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('reactions', [ReactionController::class, 'store']);
 
     Route::post('/update-profile', [ProfileController::class, 'update_profile'])->middleware('auth:sanctum');
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
+
+    Route::get('/topic', [TopicController::class, 'index']);
+
+    Route::get('/subtopic/{topic}', [SubTopicController::class, 'index']);
 
     Route::post('/chat', [ChatController::class, 'createChat']);
     Route::get('/chat/{from}', [ChatController::class, 'getChatForUser']);
@@ -54,11 +62,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('transaction/webhook', [TransactionController::class, 'webhook'])->name('transaction.webhook');
 
     Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
-});
-
-
-Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
-    return $request->user();
 });
 
 Route::post('login', [AuthController::class, 'login'])->middleware('guest:sanctum');

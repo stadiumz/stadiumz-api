@@ -24,10 +24,11 @@ class TransactionController extends Controller
         $user = Auth::user();
         $user_id = $user->id;
 
+        $credit = CreditPackage::where('id', $request->credit_package_id)->first();
         $params = [
             'external_id' => (string) Str::uuid(),
-            'amount' => $request->amount,
-            'invoice_duration' => 10,
+            'amount' => $credit->price,
+            'invoice_duration' => 19200,
             'currency' => 'IDR',
             'reminder_time' => 1,
         ];
@@ -41,14 +42,10 @@ class TransactionController extends Controller
         $invoice->credit_package_id = $request->credit_package_id;
         $invoice->checkout_link = $createInvoice['invoice_url'];
         $invoice->external_id = $createInvoice['external_id'];
-        $invoice->amount = $createInvoice['amount'];
+        $invoice->amount = $credit['price'];
         $invoice->status = Str::lower($createInvoice['status']);
         $invoice->save();
 
-        $credit = CreditPackage::where('price', $request->amount)->where('id', $request->credit_package_id)->first();
-        
-        $creditUser = new User();
-        $creditUser->where('id', $user_id)->increment('credit', $credit->credit); // Increment credit user
 
         return response()->json([
             'status' => 'success',
@@ -63,6 +60,7 @@ class TransactionController extends Controller
         // Get all data from Xendit
         $apiInstance = new InvoiceApi();
         $requestData = $request->json()->all();
+        // dd($requestData);
 
         // Get invoice from Xendit by invoice ID
         $invoiceId = $requestData['id'];
@@ -73,10 +71,10 @@ class TransactionController extends Controller
         $expired_date = $get_invoice['expiry_date']->format('Y-m-d H:i:s');
         // dd($current_time, $expired_date);
 
+        $invoice = Transaction::where('external_id', $get_invoice['external_id'])->first();
         if ($current_time > $expired_date) {
             // dd('Invoice has been expired');
             // Update to database
-            $invoice = Transaction::where('external_id', $get_invoice['external_id'])->first();
             $invoice->status = Str::lower($get_invoice['status']);
             $invoice->save();
 
@@ -86,12 +84,12 @@ class TransactionController extends Controller
                 'data' => $get_invoice
             ]);
         }
-
-        // dd('Invoice has been paid');
-        // Update to database
-        $invoice = Transaction::where('external_id', $get_invoice['external_id'])->first();
         $invoice->status = Str::lower($get_invoice['status']);
         $invoice->save();
+
+        $credit = CreditPackage::where('id', $invoice->credit_package_id)->first();
+        $creditUser = new User();
+        $creditUser->where('id', $invoice->user_id)->increment('credit', $credit->credit); // Increment credit user
 
         return response()->json([
             'status' => $get_invoice['status'],
