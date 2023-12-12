@@ -26,7 +26,7 @@ class AuthController extends Controller
                 'success' => false,
                 'message' => 'Ada Kesalahan',
                 'data' => $validator->errors()
-            ]);
+            ], 400);
         }
 
         $input = $request->all();
@@ -61,7 +61,7 @@ class AuthController extends Controller
                 'success' => false,
                 'message' => 'Cek email dan password lagi',
                 'data' => null
-            ]);
+            ], 401);
         }
     }
 
