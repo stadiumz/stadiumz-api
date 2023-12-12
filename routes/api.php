@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\EmailVerificationController;
 use App\Http\Controllers\Api\NewPasswordController;
 use App\Http\Controllers\API\TransactionController;
 use App\Http\Controllers\API\CommentController;
+use App\Http\Controllers\API\QuizController;
 use App\Http\Controllers\API\ReactionController;
 use App\Http\Controllers\API\SubTopicController;
 use App\Http\Controllers\API\TopicController;
@@ -54,6 +55,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::post('/chat', [ChatController::class, 'createChat']);
     Route::get('/chat/{from}', [ChatController::class, 'getChatForUser']);
+
+    Route::get('/quiz/{subtopic}', [QuizController::class, 'index']);
+    Route::post('/quiz/answer/{id}', [QuizController::class, 'answerQuiz']);
 
     Route::get('/credit-packages', [CreditPackageController::class, 'getCreditPackages']);
     Route::get('/credit-packages/{id}', [CreditPackageController::class, 'getCreditPackageById']);

@@ -15,8 +15,9 @@ class ArticleController extends Controller
     {
         $artikels = Article::query()
             ->withCount(['comments', 'reactions'])
+            ->with(['user', 'reactions'])
             ->orderBy('created_at', 'desc')
-            ->with('user')->get();
+            ->get();
 
         return response()->json([
             "success" => true,
@@ -61,10 +62,18 @@ class ArticleController extends Controller
 
     public function show($id)
     {
-        $artikels = Article::find($id);
+        $artikels = Article::query()
+            ->withCount(['comments', 'reactions'])
+            ->with(['user', 'reactions', 'comments', 'comments.user'])
+            ->where('id', $id)
+            ->first();
 
         if (is_null($artikels)) {
-            return $this->sendError('Article not found.');
+           return response()->json([
+               "success" => false,
+               "message" => "Article not found.",
+               "data" => $artikels
+           ], 404);
         }
 
         return response()->json([

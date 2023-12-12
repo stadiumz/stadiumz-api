@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\Article;
 use App\Models\Comment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -27,10 +28,17 @@ class CommentController extends Controller
     {
         $input = $request->all();
 
+        $article = Article::find($input['article_id']);
+        if(!$article) {
+            return response()->json([
+                "success" => false,
+                "message" => "Article not found."
+            ], 404);
+        }
+
         $validator = Validator::make($input, [
             'comment' => 'required',
             'article_id' => 'required',
-            'user_id' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -38,10 +46,18 @@ class CommentController extends Controller
                 "success" => false,
                 "message" => "Validation Error.",
                 "data" => $validator->errors()
-            ]);
+            ], 400);
         }
 
-        $comments = Comment::create($input);
+        $comments = Comment::create([
+            'comment' => $input['comment'],
+            'article_id' => $input['article_id'],
+            'user_id' => auth()->user()->id,
+        ]);
+
+        $article->update([
+            'count_comment' => $article->count_comment + 1,
+        ]);
 
         return response()->json([
             "success" => true,

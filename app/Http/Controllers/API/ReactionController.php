@@ -33,6 +33,32 @@ class ReactionController extends Controller
             ], 404);
         }
 
+        // check if user already reacted
+        $reaction = Reaction::where('user_id', auth()->user()->id)
+            ->where('article_id', $article->id)
+            ->first();
+
+        if ($reaction) {
+            // unreact
+            if ($reaction->react == 1) {
+                $article->update([
+                    'count_reaction' => $article->count_reaction - 1,
+                ]);
+
+                $reaction->delete();
+
+                return response()->json([
+                    "success" => true,
+                    "message" => "Reaction deleted successfully.",
+                    "data" => $article->reactions
+                ]);
+            }
+        }
+
+        $article->update([
+            'count_reaction' => $article->count_reaction + 1,
+        ]);
+
         $article->reactions()->create([
             'user_id' => auth()->user()->id,
             'react' => 1
