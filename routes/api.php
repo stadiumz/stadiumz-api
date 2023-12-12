@@ -68,6 +68,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 });
 
+
 Route::post('login', [AuthController::class, 'login'])->middleware('guest:sanctum');
 Route::post('register', [AuthController::class, 'register']);
 
