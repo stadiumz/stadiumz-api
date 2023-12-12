@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
@@ -26,7 +26,7 @@ class AuthController extends Controller
                 'success' => false,
                 'message' => 'Ada Kesalahan',
                 'data' => $validator->errors()
-            ]);
+            ], 400);
         }
 
         $input = $request->all();
@@ -61,7 +61,7 @@ class AuthController extends Controller
                 'success' => false,
                 'message' => 'Cek email dan password lagi',
                 'data' => null
-            ]);
+            ], 401);
         }
     }
 

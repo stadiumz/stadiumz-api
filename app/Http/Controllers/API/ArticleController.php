@@ -13,7 +13,11 @@ class ArticleController extends Controller
 {
     public function index()
     {
-        $artikels = Article::all();
+        $artikels = Article::query()
+            ->withCount(['comments', 'reactions'])
+            ->with(['user', 'reactions'])
+            ->orderBy('created_at', 'desc')
+            ->get();
 
         return response()->json([
             "success" => true,
@@ -29,10 +33,15 @@ class ArticleController extends Controller
         $validator = Validator::make($input, [
             'title' => 'required',
             'content' => 'required',
+            // 'user_id' => 'required'
         ]);
 
         if ($validator->fails()) {
-            return $this->sendError('Validation Error.', $validator->errors());
+            return response()->json([
+                "success" => false,
+                "message" => "Validation Error.",
+                "errors" => $validator->errors()
+            ], 400);
         }
 
         // Mengambil ID pengguna yang sedang login
@@ -40,6 +49,7 @@ class ArticleController extends Controller
 
         // Menambahkan user_id ke input sebelum menyimpan artikel
         $input['user_id'] = $user_id;
+        $input['thumbnail'] = $input['thumbnail'] ?? 'https://via.placeholder.com/150';
 
         $artikels = Article::create($input);
 
@@ -52,10 +62,18 @@ class ArticleController extends Controller
 
     public function show($id)
     {
-        $artikels = Article::find($id);
+        $artikels = Article::query()
+            ->withCount(['comments', 'reactions'])
+            ->with(['user', 'reactions', 'comments', 'comments.user'])
+            ->where('id', $id)
+            ->first();
 
         if (is_null($artikels)) {
-            return $this->sendError('Article not found.');
+           return response()->json([
+               "success" => false,
+               "message" => "Article not found.",
+               "data" => $artikels
+           ], 404);
         }
 
         return response()->json([
@@ -65,9 +83,10 @@ class ArticleController extends Controller
         ]);
     }
 
-    public function update(Request $request, Article $artikel)
+    public function update(Request $request, $id)
     {
         $input = $request->all();
+        $artikel = Article::find($id);
 
         $validator = Validator::make($input, [
             'title' => 'string',

@@ -14,7 +14,11 @@ use App\Http\Controllers\Api\EmailVerificationController;
 use App\Http\Controllers\Api\NewPasswordController;
 use App\Http\Controllers\API\TransactionController;
 use App\Http\Controllers\API\CommentController;
+use App\Http\Controllers\API\QuizController;
 use App\Http\Controllers\API\ReactionController;
+use App\Http\Controllers\API\SubTopicController;
+use App\Http\Controllers\API\TopicController;
+use App\Http\Controllers\CommentController as ControllersCommentController;
 use Illuminate\Routing\Route as RoutingRoute;
 
 /*
@@ -30,7 +34,6 @@ use Illuminate\Routing\Route as RoutingRoute;
 
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
-    Route::post('/generate-topic', [LearnController::class, 'generateTopic']);
 
     Route::get('artikels', [ArticleController::class, 'index']);
     Route::post('artikels', [ArticleController::class, 'store']);
@@ -42,9 +45,19 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('reactions', [ReactionController::class, 'store']);
 
     Route::post('/update-profile', [ProfileController::class, 'update_profile'])->middleware('auth:sanctum');
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
+
+    Route::get('/topic', [TopicController::class, 'index']);
+
+    Route::get('/subtopic/{topic}', [SubTopicController::class, 'index']);
 
     Route::post('/chat', [ChatController::class, 'createChat']);
     Route::get('/chat/{from}', [ChatController::class, 'getChatForUser']);
+
+    Route::get('/quiz/{subtopic}', [QuizController::class, 'index']);
+    Route::post('/quiz/answer/{id}', [QuizController::class, 'answerQuiz']);
 
     Route::get('/credit-packages', [CreditPackageController::class, 'getCreditPackages']);
     Route::get('/credit-packages/{id}', [CreditPackageController::class, 'getCreditPackageById']);
@@ -56,10 +69,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 });
 
 
-Route::get('/user', function (Request $request) {
-    return $request->user(); 
-})->middleware(['auth:sanctum']);
-
 Route::post('login', [AuthController::class, 'login'])->middleware('guest:sanctum');
 Route::post('register', [AuthController::class, 'register']);
 
@@ -68,3 +77,13 @@ Route::get('verify-email/{id}/{hash}', [EmailVerificationController::class, 'ver
 
 Route::post('forgot-password', [NewPasswordController::class, 'forgotPassword']);
 Route::post('reset-password', [NewPasswordController::class, 'reset']);
+
+// group route for transaction with middleware sactum
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('/credit-packages', [CreditPackageController::class, 'getCreditPackages']);
+    Route::get('/credit-packages/for', [CreditPackageController::class, 'getCreditPackageById']);
+    Route::post('transaction/create-payment', [TransactionController::class, 'createPayment'])->name('transaction.create-payment');
+});
+
+Route::post('transaction/webhook', [TransactionController::class, 'webhook'])->name('transaction.webhook');
+Route::post('transaction/expired-payment', [TransactionController::class, 'expiredPayment'])->name('transaction.expired-payment');

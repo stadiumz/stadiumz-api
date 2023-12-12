@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Subtopic extends Model
 {
     use HasFactory;
+
+    function topic()
+    {
+        return $this->belongsTo(Topic::class);
+    }
 }
